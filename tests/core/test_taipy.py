@@ -445,11 +445,11 @@ class TestTaipy:
         scenario_3 = _ScenarioManager._create(scenario_3_cfg)
 
         _ScenarioManager._tag(scenario_1, "banana")
-        _ScenarioManager._tag(scenario_1, "kiwi")   # scenario_1 now has tags {"banana", "kiwi"}
-        _ScenarioManager._tag(scenario_2, "apple")  
-        _ScenarioManager._tag(scenario_2, "banana") # scenario_2 now has tags {"banana", "apple"}
-        _ScenarioManager._tag(scenario_3, "apple")  
-        _ScenarioManager._tag(scenario_3, "kiwi")   # scenario_2 now has tags {"kiwi", "apple"}
+        _ScenarioManager._tag(scenario_1, "kiwi")  # scenario_1 now has tags {"banana", "kiwi"}
+        _ScenarioManager._tag(scenario_2, "apple")
+        _ScenarioManager._tag(scenario_2, "banana")  # scenario_2 now has tags {"banana", "apple"}
+        _ScenarioManager._tag(scenario_3, "apple")
+        _ScenarioManager._tag(scenario_3, "kiwi")  # scenario_2 now has tags {"kiwi", "apple"}
 
         scenarios_sorted_by_name = [scenario_3, scenario_1, scenario_2]
         assert scenarios_sorted_by_name == tp.get_scenarios(is_sorted=True, sort_key="name")
@@ -465,7 +465,9 @@ class TestTaipy:
         assert scenarios_sorted_by_tag == tp.get_scenarios(is_sorted=True, sort_key="tags")
 
         scenarios_sorted_by_name_descending_order = [scenario_2, scenario_1, scenario_3]
-        assert scenarios_sorted_by_name_descending_order == tp.get_scenarios(is_sorted=True, descending=True, sort_key="name")
+        assert scenarios_sorted_by_name_descending_order == tp.get_scenarios(
+            is_sorted=True, descending=True, sort_key="name"
+        )
 
     def test_get_scenario(self, scenario):
         with mock.patch("taipy.core.scenario._scenario_manager._ScenarioManager._get") as mck:

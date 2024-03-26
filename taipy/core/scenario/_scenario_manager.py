@@ -269,10 +269,14 @@ class _ScenarioManager(_Manager[Scenario], _VersionMixin):
     @classmethod
     def _get_primary_scenarios(cls) -> List[Scenario]:
         return [scenario for scenario in cls._get_all() if scenario.is_primary]
-    
+
     @classmethod
-    def _sort_scenarios(cls, scenarios: List[Scenario], descending: Optional[bool]= False, 
-                        sort_key: Optional[Literal["name", "id", "creation_date", "tags"]] = "name") -> List[Scenario]:
+    def _sort_scenarios(
+        cls,
+        scenarios: List[Scenario],
+        descending: Optional[bool] = False,
+        sort_key: Optional[Literal["name", "id", "creation_date", "tags"]] = "name",
+    ) -> List[Scenario]:
         if sort_key in ["name", "id", "creation_date", "tags"]:
             if sort_key == "tags":
                 scenarios.sort(key=lambda x: tuple(sorted(x.tags)), reverse=descending)
