@@ -510,7 +510,7 @@ def get_scenarios(
     tag: Optional[str] = None,
     is_sorted: Optional[bool] = False,
     descending: Optional[bool] = False,
-    sort_key: Optional[Literal["name", "id", "creation_date", "tags"]] = "name",
+    sort_key: Optional[Literal["name", "id", "config_id", "creation_date", "tags"]] = "name",
 ) -> List[Scenario]:
     """Retrieve a list of existing scenarios filtered by cycle or tag.
 
@@ -532,6 +532,8 @@ def get_scenarios(
         The list of scenarios filtered by cycle or tag and optionally sorted by name, id, creation_date or tags.
         If no filtering criteria are provided, this method returns all existing scenarios.
         If is_sorted is set to true, but an incorrect or no sort_key is provided, then the scenarios are sorted by name.
+        If the attribute sort_key of some scenarios are equivalent, a second criteria is used. 
+        In this case, these scenarios are sorted by their unique id's.
     """
     scenario_manager = _ScenarioManagerFactory._build_manager()
     if not cycle and not tag:
@@ -547,13 +549,15 @@ def get_scenarios(
         scenarios = []
 
     if is_sorted:
-        if sort_key in ["name", "id", "creation_date", "tags"]:
+        if sort_key in ["name", "config_id", "creation_date", "tags"]:
             if sort_key == "tags":
-                scenarios.sort(key=lambda x: tuple(sorted(x.tags)), reverse=descending)
+                scenarios.sort(key=lambda x: (tuple(sorted(x.tags)), x.id), reverse=descending)
             else:
-                scenarios.sort(key=lambda x: getattr(x, sort_key), reverse=descending)
+                scenarios.sort(key=lambda x: (getattr(x, sort_key), x.id), reverse=descending)
+        elif sort_key == "id":
+            scenarios.sort(key=lambda x: x.id, reverse=descending)
         else:
-            scenarios.sort(key=lambda x: x.name, reverse=descending)
+            scenarios.sort(key=lambda x: (x.name, x.id), reverse=descending)
 
     return scenarios
 
